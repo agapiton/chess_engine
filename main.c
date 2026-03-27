@@ -4,11 +4,10 @@
 
 
 int main(int argc, char *argv[]){
-    position *pos = &DEFAULT_STARTING_POSITION;
+    position pos = DEFAULT_STARTING_POSITION;
     char move[MAX_AN_MOVE_LEN+1] = "\0";
-    do{
-        pos = movepiece(pos, move);
-        printboard(pos);
-    }while(fgets(move, MAX_AN_MOVE_LEN, stdin));
+    while(fgets(move, MAX_AN_MOVE_LEN+1, stdin)){
+        printboard((pos = movepiece(pos, parseMove(move))));
+    }
     return 0;
 }

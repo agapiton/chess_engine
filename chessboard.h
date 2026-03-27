@@ -34,15 +34,36 @@ typedef int8_t chessboard[8][8];
 typedef struct{
     int8_t toMove;
     chessboard board;
+    char lastMove[MAX_AN_MOVE_LEN+1];
+    uint8_t blackKingMoved: 1;
+    uint8_t whiteKingMoved: 1;
+    uint8_t longBlackRookMoved: 1;
+    uint8_t longWhiteRookMoved: 1;
+    uint8_t shortBlackRookMoved: 1;
+    uint8_t shortWhiteRookMoved: 1;
 }position;
+
+typedef struct{
+    int8_t pieceToMove;
+    int8_t rowTo :4;
+    int8_t columnTo :4;
+    int8_t rowFrom :4;
+    int8_t columnFrom :4;
+}parsedMove;
 
 #define DEFAULT_STARTING_POSITION (position){\
     .board = DEFAULT_STARTING_BOARD,\
-    .toMove = WHITE                 \
+    .toMove = WHITE,                \
+    .blackKingMoved = 0,\
+    .whiteKingMoved = 0,\
+    .longBlackRookMoved = 0,\
+    .longWhiteRookMoved = 0,\
+    .shortBlackRookMoved = 0,\
+    .shortWhiteRookMoved = 0,\
 }                                   
 
-void printboard(position*);
+parsedMove parseMove(char*);
 
-position *movepiece(position*, char*);
+void printboard(position);
 
-position *cppos(position*);
+position movepiece(position, parsedMove);

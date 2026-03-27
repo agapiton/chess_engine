@@ -1,68 +1,67 @@
 #include "chessboard.h"
 
-void printboard(position *pos){
+void printboard(position pos){
     for(int i = 0; i < 8; i++){
         for(int j = 0; j < 8; j++){
-            printf("%d ",pos->board[i][j]);
+            printf("%d ",pos.board[i][j]);
         }
         printf("\n");
     }
 }
 
-position *cppos(position* pos){
-    position *copiedpos = malloc(sizeof(position));
-    copiedpos->toMove = pos->toMove;
-    for(int i = 0; i < 8;i++){
-        for (int j = 0; j < 8; j++){
-            copiedpos->board[i][j] = pos->board[i][j];
-        }
-    }
-    return copiedpos;
-}
-
-position *movepiece(position *pos, char* move){
-    int piecetomove = PAWN;
-    int rowto = 0;
-    int columnto = 0;
-    int rowfrom = 0;
-    int columnfrom = 0;
+parsedMove parseMove(char* move){
     int i = 0;
+    parsedMove movetoreturn = {
+        .columnFrom = -1,
+        .rowFrom = -1,
+        .columnTo = -1,
+        .rowTo = -1,
+        .pieceToMove = PAWN
+    };
     if (move[0] <= 'Z' && move[0] >= 'A'){
         i++;
         switch (move[0])
         {
         case 'N':
-            piecetomove = KNIGHT;
+            movetoreturn.pieceToMove = KNIGHT;
             break;
         case 'B':
-            piecetomove = BISHOP;
+            movetoreturn.pieceToMove = BISHOP;
             break;
         case 'Q':
-            piecetomove = QUEEN;
+            movetoreturn.pieceToMove = QUEEN;
             break;
         case 'K':
-            piecetomove = KING;
+            movetoreturn.pieceToMove = KING;
             break;
         case 'R':
-            piecetomove = ROOK;
+            movetoreturn.pieceToMove = ROOK;
             break;
         default:
             fprintf(stderr, "ERROR: can not read a piece from move:%s", move);
             break;
         }
     }
-    for(;!iscntrl(move[i]);i++){
-        if(move[i] <= 'z' && move[i] >= 'a'){
-            columnto = move[i] - 'a';
-        }else if(move[i] <= '8' && move[i] >= '1'){
-            rowto = '8' - move[i];
+    /*DONT FORGET TO CHECK FOR CASTLE*/
+    for(; !iscntrl(move[i]); i++){ //while move[i] is not an end of the string we check
+        if(move[i] <= 'h' && move[i] >= 'a'){ // if the symbol is column
+            movetoreturn.columnTo = move[i] - 'a';
         }
-        else if(move[i] == 'x'){
-            columnfrom = columnto;
-            rowfrom = rowto;
+        else if(move[i] <= '8' && move[i] >= '1'){ // if the symbol is row
+            movetoreturn.rowTo = '8' - move[i];
         }
+        else if(move[i] == 'x'){ //or if it is declarates capture
+            movetoreturn.columnFrom = movetoreturn.columnTo;
+            movetoreturn.rowFrom = movetoreturn.rowTo;
+            movetoreturn.rowTo = -1;
+            movetoreturn.columnTo = -1;
+        }
+        //check for # and *
     }
-    position *copiedpos = cppos(pos);
-    copiedpos->board[rowto][columnto] = piecetomove;
-    return copiedpos;
+    return movetoreturn;
+}
+
+position movepiece(position pos, parsedMove move){
+    pos.board[move.rowTo][move.columnTo] = move.pieceToMove;
+    return pos;
 }
