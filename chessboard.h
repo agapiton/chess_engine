@@ -2,7 +2,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
+#define NUMBEROFPIECES 6
 #define MAX_AN_MOVE_LEN 7
 
 #define WHITE 1
@@ -49,7 +51,14 @@ typedef struct{
     int8_t columnTo :4;
     int8_t rowFrom :4;
     int8_t columnFrom :4;
+    enum {
+        NOTCASTLE,
+        OO,
+        OOO
+    } isCastle;
 }parsedMove;
+
+extern const int8_t navmesh[NUMBEROFPIECES+1][8][2];
 
 #define DEFAULT_STARTING_POSITION (position){\
     .board = DEFAULT_STARTING_BOARD,\
@@ -67,3 +76,5 @@ parsedMove parseMove(char*);
 void printboard(position);
 
 position movepiece(position, parsedMove);
+
+uint8_t isCheck(position, int);
