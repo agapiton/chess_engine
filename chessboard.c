@@ -82,6 +82,9 @@ parsedMove parseMove(char* move){
     return movetoreturn;
 }
 
+
+
+//PRBBL this function wouldnt be used anyway, buy now its debugged and working
 uint8_t isCheck(position pos, int side){
     int kingrow;
     int kingcol;
@@ -93,9 +96,10 @@ uint8_t isCheck(position pos, int side){
             }
         }
     }
-    uint8_t result;
-    //smth is wrong and it is not working yet. tomorrow i'll try learn debugging 
-    
+    uint8_t result = 0;
+    int k;
+    // smth is wrong and it is not working yet. tomorrow i'll try learn debugging
+
     //CHECK FOR CHECK FROM PAWNS
     if(kingrow - side < 8 && kingrow - side >= 0){
         if(kingcol + 1 < 8 && kingcol + 1 >= 0){
@@ -105,6 +109,7 @@ uint8_t isCheck(position pos, int side){
             result += pos.board[kingrow - side][kingcol - 1] == PAWN * side * -1;
         }
     }
+
     //CHECK FOR CHECK FROM KNIGHT
     for(int i = 0;i<8;++i){
         if(kingrow+navmesh[KNIGHT][i][0] < 8 && kingrow+navmesh[KNIGHT][i][0] >= 0\
@@ -113,33 +118,43 @@ uint8_t isCheck(position pos, int side){
                 result++;
         }
     }
+
     //CHECK FOR CHECK FROM BISHOP
     for(int i =0;i<4;++i){
-        int k;
         for(k = 1; kingrow+navmesh[BISHOP][i][0]*k < 8 && kingrow+navmesh[BISHOP][i][0]*k >= 0\
-        && pos.board[kingrow+navmesh[BISHOP][i][0]][kingcol+navmesh[BISHOP][i][1]] == EMPTY;++k)
-        if(kingrow+navmesh[BISHOP][i][0]*k < 8 && kingrow+navmesh[BISHOP][i][0]*k >= 0){
+                && kingcol+navmesh[BISHOP][i][1]*k < 8 && kingcol+navmesh[BISHOP][i][1]*k >= 0\
+                && pos.board[kingrow+k*navmesh[BISHOP][i][0]][kingcol+k*navmesh[BISHOP][i][1]] == EMPTY;++k);
+        if(kingrow+navmesh[BISHOP][i][0]*k < 8 && kingrow+navmesh[BISHOP][i][0]*k >= 0\
+            && kingcol+navmesh[BISHOP][i][1]*k < 8 && kingcol+navmesh[BISHOP][i][1]*k >= 0){
             result +=pos.board[kingrow+k*navmesh[BISHOP][i][0]][kingcol+k*navmesh[BISHOP][i][1]] == BISHOP * side * -1; 
         }
     }
+
+
+
     //CHECK FOR CHECK FROM ROOK
     for(int i =0;i<4;++i){
-        int k;
         for(k = 1; kingrow+navmesh[ROOK][i][0]*k < 8 && kingrow+navmesh[ROOK][i][0]*k >= 0\
-        && pos.board[kingrow+navmesh[ROOK][i][0]][kingcol+navmesh[ROOK][i][1]] == EMPTY;++k)
-        if(kingrow+navmesh[ROOK][i][0]*k < 8 && kingrow+navmesh[ROOK][i][0]*k >= 0){
+                && kingcol+navmesh[ROOK][i][1]*k < 8 && kingcol+navmesh[ROOK][i][1]*k >= 0\
+                && pos.board[kingrow+k*navmesh[ROOK][i][0]][kingcol+k*navmesh[ROOK][i][1]] == EMPTY;++k);
+        if(kingrow+navmesh[ROOK][i][0]*k < 8 && kingrow+navmesh[ROOK][i][0]*k >= 0\
+            && kingcol+navmesh[ROOK][i][1]*k < 8 && kingcol+navmesh[ROOK][i][1]*k >= 0){
             result +=pos.board[kingrow+k*navmesh[ROOK][i][0]][kingcol+k*navmesh[ROOK][i][1]] == ROOK * side * -1; 
         }
     }
+
+
     //CHECK FOR CHECK FROM QUEEN
     for(int i =0;i<8;++i){
-        int k;
         for(k = 1; kingrow+navmesh[QUEEN][i][0]*k < 8 && kingrow+navmesh[QUEEN][i][0]*k >= 0\
-        && pos.board[kingrow+navmesh[QUEEN][i][0]][kingcol+navmesh[QUEEN][i][1]] == EMPTY;++k)
-        if(kingrow+navmesh[QUEEN][i][0]*k < 8 && kingrow+navmesh[QUEEN][i][0]*k >= 0){
+                && kingcol+navmesh[QUEEN][i][1]*k < 8 && kingcol+navmesh[QUEEN][i][1]*k >= 0\
+                && pos.board[kingrow+k*navmesh[QUEEN][i][0]][kingcol+k*navmesh[QUEEN][i][1]] == EMPTY;++k);
+        if(kingrow+navmesh[QUEEN][i][0]*k < 8 && kingrow+navmesh[QUEEN][i][0]*k >= 0\
+            && kingcol+navmesh[QUEEN][i][1]*k < 8 && kingcol+navmesh[QUEEN][i][1]*k >= 0){
             result +=pos.board[kingrow+k*navmesh[QUEEN][i][0]][kingcol+k*navmesh[QUEEN][i][1]] == QUEEN * side * -1; 
         }
     }
+
     //CHECK FOR CHECK FROM KING
     for(int i = 0;i<8;++i){
         if(kingrow+navmesh[KING][i][0] < 8 && kingrow+navmesh[KING][i][0] >= 0\
@@ -158,10 +173,9 @@ position movepiece(position pos, parsedMove move){
         return pos;
     }
     else if(move.isCastle == OO){
-
+        return pos;
     }
     else if(move.isCastle == OOO){
-
+        return pos;
     }
-    
 }
